@@ -27,7 +27,7 @@ def build_bot(user_id='navitesh.vaswani@saama.com'):
 
 	#Making the Nodes
 
-	greet_user = Input('', text_only=True, name='greet_user')
+	greet_user = Input('How are you', text_only=True, name='greet_user')
 	graph.add_node(greet_user)
 
 	ytd_sales = NLUParser(name='ytd_sales', model_path='./ytd_sales', config_path='./resources/config_spacy.json')
@@ -63,6 +63,9 @@ def build_bot(user_id='navitesh.vaswani@saama.com'):
 	final_response.add_response_pattern('[result]')
 	graph.add_node(final_response)
 
+	exitnode = Input('Do you have another question?', text_only=True, name='exitnode')
+	graph.add_node(exitnode)
+
 	#Making the Connections
 
 	greet_user.add_output(ytd_sales)
@@ -78,7 +81,8 @@ def build_bot(user_id='navitesh.vaswani@saama.com'):
 	month_input.add_output(month_parse)
 	month_parse.add_output('month', month_validate)
 	show_value.add_output(final_response)
-	final_response.add_output(end)
+	final_response.add_output(exitnode)
+	exitnode.add_output(end)
 
 	#Complete the Build
 	graph.build_completed()
