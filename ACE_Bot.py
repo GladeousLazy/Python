@@ -5,7 +5,10 @@ import json
 from virtassnt.nodes import *
 from virtassnt.core import Node, Message
 from virtassnt.graph import Graph
+import pandas as pd #Navitesh - This line was added to create custom dataframe for the Dalia bot
 
+#Navitesh - Below is a sample data from for testing out the bot, the data contains year, month and sales value
+df = pd.DataFrame([[2018,'jan',1000],[2019,'jan',2000],[2017,'jan',3000],[2018,'feb',4000]],columns = ['year','month','sales'])
 
 class CustomAction_show_value(Node):
 
@@ -13,12 +16,32 @@ class CustomAction_show_value(Node):
 		self.pprint = PrettyPrinter(indent=4)
 		super(CustomAction_show_value, self).__init__(name)
 
-
+#Navitesh - The below piece of code is updated to accomodate the custom response
 	def call(self, incoming_msg):
 		data=incoming_msg.data
 		#Put API Logic Here
+		entities = data["entities"]
+		year = entities["year"]
+		month = entities["month"]
 
-		results = {'for_response': results}
+		def convert_res(row):
+			return {"year" : row["year"], "month" : row["month"] , sales : row[sales]}
+
+		res = products.apply(convert_res, axis=1)
+
+		##Navitesh -  This is the original peice of code ##  results = {'for_response': results}
+
+        #Navitesh - Below is the new piece of code that creates the desired response.
+        results = {
+			"for_response" : {
+				"results" : {
+				"type" : "text",
+                "data" : "The year selected is " + year + " and the month selected is " +  month,
+                "baseName" : "year"
+                }
+			}
+		}
+				
 		outgoing_msg=Message.merge([incoming_msg, Message(results)])
 		return super(CustomAction_show_value, self).call(outgoing_msg)
 def build_bot(user_id='navitesh.vaswani@saama.com'):
