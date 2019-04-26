@@ -63,7 +63,7 @@ def build_bot(user_id='navitesh.vaswani@saama.com'):
 	final_response.add_response_pattern('[result]')
 	graph.add_node(final_response)
 
-	exitnode = Input('Do you have another question?', text_only=True, name='exitnode')
+	exitnode = Input('Do you have any other request?', text_only=True, name='exitnode')
 	graph.add_node(exitnode)
 
 	#Making the Connections
